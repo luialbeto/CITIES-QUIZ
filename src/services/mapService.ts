@@ -37,7 +37,7 @@ const MAP_STYLES: google.maps.MapTypeStyle[] = [
     elementType: 'geometry.stroke',
     stylers: [
       { visibility: 'on' },
-      { color: '#666666' }, 
+      { color: '#666666' },
       { weight: 1.2 },
     ],
   },
@@ -71,72 +71,73 @@ const MAP_STYLES: google.maps.MapTypeStyle[] = [
 export class MapService {
   private static isLoading = false;
   private static isLoaded = false;
+  private static loadPromise: Promise<any> | null = null;
 
-
-  static async loadMapsAPI(): Promise<typeof google.maps> {
+  static async loadMapsAPI(): Promise<any> {
     const apiKey = import.meta.env.VITE_GOOGLE_MAPS_API_KEY;
 
+    console.log('Loading Google Maps API...');
+    console.log('API Key present:', !!apiKey);
+
     if (!apiKey) {
-      throw new Error('Google Maps API key is not defined. Please check your .env file.');
+      throw new Error('Google Maps API key is not defined. Check environment variables.');
     }
 
-    if (this.isLoaded && window.google?.maps) {
-      return google.maps;
+    if (this.isLoaded && (window as any).google?.maps) {
+      console.log('Google Maps already loaded');
+      return (window as any).google.maps;
     }
 
-    if (this.isLoading) {
-      return new Promise((resolve) => {
-        const checkLoaded = setInterval(() => {
-          if (this.isLoaded && window.google?.maps) {
-            clearInterval(checkLoaded);
-            resolve(google.maps);
-          }
-        }, 100);
-      });
+    if (this.isLoading && this.loadPromise) {
+      console.log('Waiting for existing load...');
+      return this.loadPromise;
     }
 
     this.isLoading = true;
 
-    try {
-      await new Promise<void>((resolve, reject) => {
-        const existingScript = document.querySelector(
-          'script[src*="maps.googleapis.com"]'
-        );
+    this.loadPromise = new Promise<void>((resolve, reject) => {
+      const existingScript = document.querySelector(
+        'script[src*="maps.googleapis.com"]'
+      );
 
-        if (existingScript && window.google?.maps) {
-          this.isLoaded = true;
-          this.isLoading = false;
-          resolve();
-          return;
-        }
+      if (existingScript && (window as any).google?.maps) {
+        console.log('Script already present');
+        this.isLoaded = true;
+        this.isLoading = false;
+        resolve();
+        return;
+      }
 
-        const script = document.createElement('script');
-        script.src = `https://maps.googleapis.com/maps/api/js?key=${apiKey}&v=weekly`;
-        script.async = true;
-        script.defer = true;
+      if (existingScript) {
+        existingScript.remove();
+      }
 
-        script.onload = () => {
-          this.isLoaded = true;
-          this.isLoading = false;
-          resolve();
-        };
+      const script = document.createElement('script');
+      script.src = `https://maps.googleapis.com/maps/api/js?key=${apiKey}&v=weekly&loading=async`;
+      script.async = true;
+      script.defer = true;
 
-        script.onerror = () => {
-          this.isLoading = false;
-          reject(new Error('Failed to load Google Maps script'));
-        };
+      script.onload = () => {
+        console.log('Google Maps script loaded successfully');
+        this.isLoaded = true;
+        this.isLoading = false;
+        resolve();
+      };
 
-        document.head.appendChild(script);
-      });
+      script.onerror = (error) => {
+        console.error('Failed to load Google Maps script:', error);
+        this.isLoading = false;
+        this.loadPromise = null;
+        reject(new Error('Failed to load Google Maps script'));
+      };
 
-      return google.maps;
-    } catch (error) {
-      this.isLoading = false;
-      console.error('Error loading Google Maps API:', error);
-      throw error;
-    }
+      document.head.appendChild(script);
+    }).then(() => {
+      return (window as any).google.maps;
+    });
+
+    return this.loadPromise;
   }
-
 
   static createMapConfig(): MapConfig {
     return {
@@ -148,13 +149,13 @@ export class MapService {
     };
   }
 
-
   static createMarker(
-    map: google.maps.Map,
-    position: google.maps.LatLngLiteral,
+    map: any,
+    position: { lat: number; lng: number },
     title: string,
     icon?: string
-  ): google.maps.Marker {
+  ): any {
+    const google = (window as any).google;
     return new google.maps.Marker({
       position,
       map,
@@ -164,13 +165,13 @@ export class MapService {
     });
   }
 
- 
   static drawLine(
-    map: google.maps.Map,
-    start: google.maps.LatLngLiteral,
-    end: google.maps.LatLngLiteral,
+    map: any,
+    start: { lat: number; lng: number },
+    end: { lat: number; lng: number },
     color: string = '#667eea'
-  ): google.maps.Polyline {
+  ): any {
+    const google = (window as any).google;
     return new google.maps.Polyline({
       path: [start, end],
       geodesic: true,
