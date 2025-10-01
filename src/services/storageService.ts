@@ -1,10 +1,15 @@
 import Cookies from 'js-cookie';
-import { COOKIE_EXPIRY_DAYS, HIGH_SCORE_COOKIE_NAME, GAME_STATE_COOKIE_NAME } from '@utils/constants';
-import type { GameState } from '@types/game.types';
 
+const COOKIE_EXPIRY_DAYS = 365;
+const HIGH_SCORE_COOKIE_NAME = 'cities_quiz_high_score';
+
+export interface GameState {
+  score: number;
+  citiesFound: number;
+  currentCityIndex: number;
+}
 
 export class StorageService {
-
   static saveHighScore(score: number): void {
     try {
       Cookies.set(HIGH_SCORE_COOKIE_NAME, score.toString(), {
@@ -16,7 +21,6 @@ export class StorageService {
     }
   }
 
-
   static getHighScore(): number {
     try {
       const score = Cookies.get(HIGH_SCORE_COOKIE_NAME);
@@ -27,32 +31,14 @@ export class StorageService {
     }
   }
 
-
   static saveGameState(gameState: Partial<GameState>): void {
-    try {
-      localStorage.setItem(GAME_STATE_COOKIE_NAME, JSON.stringify(gameState));
-    } catch (error) {
-      console.error('Failed to save game state:', error);
-    }
   }
-
 
   static getGameState(): Partial<GameState> | null {
-    try {
-      const state = localStorage.getItem(GAME_STATE_COOKIE_NAME);
-      return state ? JSON.parse(state) : null;
-    } catch (error) {
-      console.error('Failed to get game state:', error);
-      return null;
-    }
+    return null;
   }
 
-
   static clearGameState(): void {
-    try {
-      localStorage.removeItem(GAME_STATE_COOKIE_NAME);
-    } catch (error) {
-      console.error('Failed to clear game state:', error);
-    }
+    // empty
   }
 }

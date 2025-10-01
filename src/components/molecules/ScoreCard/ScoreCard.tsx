@@ -1,5 +1,5 @@
 import React from 'react';
-import { Text } from '@components/atoms/Text/Text';
+import { Text } from '../../atoms/Text/Text';
 import styles from './ScoreCard.module.scss';
 
 interface ScoreCardProps {

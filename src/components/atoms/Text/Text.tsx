@@ -9,6 +9,7 @@ interface TextProps {
   color?: string;
   children: React.ReactNode;
   className?: string;
+  id?: string;
 }
 
 export const Text: React.FC<TextProps> = ({
@@ -19,6 +20,7 @@ export const Text: React.FC<TextProps> = ({
   color,
   children,
   className = '',
+  id,
 }) => {
   const classNames = [
     styles.text,
@@ -31,7 +33,7 @@ export const Text: React.FC<TextProps> = ({
     .join(' ');
 
   return (
-    <Component className={classNames} style={{ color }}>
+    <Component id={id} className={classNames} style={{ color }}>
       {children}
     </Component>
   );
