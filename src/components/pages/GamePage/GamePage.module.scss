@@ -1,0 +1,27 @@
+.mapWrapper {
+  margin-bottom: 24px;
+}
+
+.instructions {
+  background: white;
+  padding: 24px;
+  border-radius: 12px;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+
+  h3 {
+    margin: 0 0 16px;
+    font-size: 18px;
+    color: #1f2937;
+  }
+
+  ul {
+    margin: 0;
+    padding-left: 24px;
+    line-height: 2;
+    color: #6b7280;
+
+    li {
+      margin-bottom: 8px;
+    }
+  }
+}
