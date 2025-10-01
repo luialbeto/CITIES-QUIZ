@@ -2,6 +2,21 @@
 
 A responsive, accessible web game where players locate European cities on a map. Built with React 18, TypeScript, and Google Maps API.
 
+## WEB
+
+<img width="1228" height="622" alt="image" src="https://github.com/user-attachments/assets/d9729037-3467-4b60-ba46-ccac6d63e053" />
+
+## MOBILE
+
+<img width="270" height="555" alt="image" src="https://github.com/user-attachments/assets/3f76238d-0168-4474-8972-a167047ebb0b" />
+
+## INFO
+
+<img width="797" height="561" alt="image" src="https://github.com/user-attachments/assets/bb24c65e-ad2a-4f54-8e23-f1dedc57367f" />
+
+<img width="1207" height="614" alt="image" src="https://github.com/user-attachments/assets/6f98a68c-b1af-43f9-9a08-409b38bcdc16" />
+
+
 ## Game Description
 
 Find the correct location of European cities on a map! Start with 1500 kilometers and lose distance for each incorrect guess. Place your pin within 50km of the actual city to score. The game ends when you run out of kilometers.
